@@ -1,0 +1,1 @@
+curl https://pjreddie.com/media/files/yolov3-tiny.weights > yolov3-tiny.weights
