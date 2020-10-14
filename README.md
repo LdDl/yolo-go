@@ -10,3 +10,8 @@ For testing:
 ```shell
 go run main.go --mode detector --cfg ../../test_network_data/yolov3-tiny.cfg --weights ../../test_network_data/yolov3-tiny.weights --image ../../test_network_data/dog_416x416.jpg
 ```
+
+For training:
+```shell
+go run main.go --mode training --cfg ../../test_network_data/yolov3-tiny.cfg --weights ../../test_network_data/yolov3-tiny.weights --image ../../test_network_data/dog_416x416.jpg --train ../../test_yolo_op_data
+```

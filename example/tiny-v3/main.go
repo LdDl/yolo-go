@@ -3,6 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
+	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -22,7 +25,7 @@ var (
 	weights        = flag.String("weights", "../../test_network_data/yolov3-tiny.weights", "Path to weights file")
 	cfg            = flag.String("cfg", "../../test_network_data/yolov3-tiny.cfg", "Path to net configuration file")
 	imagePath      = flag.String("image", "../../test_network_data/dog_416x416.jpg", "Path to image file for 'detector' mode")
-	trainingFolder = flag.String("train", "./data/test_yolo_op", "Path to folder with labeled data")
+	trainingFolder = flag.String("train", "../../test_yolo_op_data", "Path to folder with labeled data")
 
 	cocoClasses    = []string{"person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat", "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball", "kite", "baseball bat", "baseball glove", "skateboard", "surfboard", "tennis racket", "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple", "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair", "sofa", "pottedplant", "bed", "diningtable", "toilet", "tvmonitor", "laptop", "mouse", "remote", "keyboard", "cell phone", "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors", "teddy bear", "hair drier", "toothbrush"}
 	scoreThreshold = float32(0.8)
@@ -97,10 +100,60 @@ func main() {
 
 		break
 	case "training":
+		// W.I.P
+		labeledData, err := parseFolder(*trainingFolder)
+		if err != nil {
+			fmt.Printf("Can't prepare labeled data due the error: %s\n", err.Error())
+			return
+		}
+		for i := range labeledData {
+			fmt.Println(labeledData[i])
+		}
 		break
 	default:
 		fmt.Printf("Mode '%s' is not implemented", *modeStr)
 		return
 	}
 
+}
+
+func parseFolder(dir string) (map[string][]float32, error) {
+	filesInfo, err := ioutil.ReadDir(dir)
+	if err != nil {
+		return nil, err
+	}
+	targets := map[string][]float32{}
+
+	for i := range filesInfo {
+		sliceOfF32 := []float32{}
+		fileInfo := filesInfo[i]
+		// Parse only *.txt files
+		if fileInfo.IsDir() || filepath.Ext(fileInfo.Name()) != ".txt" {
+			continue
+		}
+		filePath := fmt.Sprintf("%s/%s", dir, fileInfo.Name())
+		fileBytes, err := ioutil.ReadFile(filePath)
+		if err != nil {
+			return nil, err
+		}
+		fileContentAsArray := strings.Split(strings.ReplaceAll(string(fileBytes), "\n", " "), " ")
+		for j := range fileContentAsArray {
+			entity := strings.TrimSpace(fileContentAsArray[j])
+			if entity == "" {
+				continue
+			}
+			entityF32, err := strconv.ParseFloat(entity, 32)
+			if err != nil {
+				return nil, err
+			}
+			sliceOfF32 = append(sliceOfF32, float32(entityF32))
+		}
+		targets[strings.Split(fileInfo.Name(), ".")[0]] = sliceOfF32
+	}
+
+	if len(targets) == 0 {
+		return nil, fmt.Errorf("Folder '%s' doesn't contain any *.txt files (annotation files for YOLO)", dir)
+	}
+
+	return targets, nil
 }
