@@ -63,7 +63,7 @@ func TestYolo(t *testing.T) {
 		g := gorgonia.NewGraph()
 		inputTensor := gorgonia.NewTensor(g, tensor.Float32, 4, gorgonia.WithShape(input.Shape()...), gorgonia.WithName("yolo"))
 		// Prepare YOLOv3 node
-		outNode, err := YOLOv3Node(inputTensor, testAnchors[i], []int{0, 1, 2}, inputSize, numClasses, 0.7)
+		outNode, _, err := YOLOv3Node(inputTensor, testAnchors[i], []int{0, 1, 2}, inputSize, numClasses, 0.7)
 		if err != nil {
 			t.Error(err)
 			return

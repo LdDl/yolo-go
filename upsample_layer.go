@@ -20,7 +20,7 @@ func (l *upsampleLayer) Type() string {
 }
 
 func (l *upsampleLayer) ToNode(g *gorgonia.ExprGraph, inputs ...*gorgonia.Node) (*gorgonia.Node, error) {
-	upsampleOut, err := gorgonia.Upsample2D(inputs[0], l.scale)
+	upsampleOut, err := Upsample2D(inputs[0], l.scale)
 	if err != nil {
 		return &gorgonia.Node{}, errors.Wrap(err, "Can't prepare upsample operation")
 	}

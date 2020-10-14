@@ -70,6 +70,9 @@ func NewYoloV3Tiny(g *gorgonia.ExprGraph, input *gorgonia.Node, classesNumber, b
 	epsilon := float32(0.000001)
 
 	yoloNodes := []*gorgonia.Node{}
+	learningNodes := []*gorgonia.Node{}
+	yoloTrainers := []YoloTrainer{}
+
 	for i := range blocks {
 		block := blocks[i]
 		filtersIdx := 0
@@ -192,6 +195,7 @@ func NewYoloV3Tiny(g *gorgonia.ExprGraph, input *gorgonia.Node, classesNumber, b
 				input = convBlock
 
 				layers = append(layers, &l)
+				learningNodes = append(learningNodes, ll.convNode)
 
 				filtersIdx = filters
 				break
@@ -343,7 +347,7 @@ func NewYoloV3Tiny(g *gorgonia.ExprGraph, input *gorgonia.Node, classesNumber, b
 				if !ok {
 					fmt.Printf("Warning: can't cast 'ignore_thresh' to float32 for YOLO layer")
 				}
-				var l layerN = &yoloLayer{
+				yoloL := yoloLayer{
 					masks:          masks,
 					anchors:        selectedAnchors,
 					flattenAnchors: flatten,
@@ -351,6 +355,9 @@ func NewYoloV3Tiny(g *gorgonia.ExprGraph, input *gorgonia.Node, classesNumber, b
 					classesNum:     classesNumber,
 					ignoreThresh:   float32(ignoreThresh64),
 				}
+
+				var l layerN = &yoloL
+
 				yoloBlock, err := l.ToNode(g, input)
 				if err != nil {
 					fmt.Printf("\tError preparing YOLO block: %s\n", err.Error())
@@ -360,6 +367,9 @@ func NewYoloV3Tiny(g *gorgonia.ExprGraph, input *gorgonia.Node, classesNumber, b
 
 				layers = append(layers, &l)
 				yoloNodes = append(yoloNodes, yoloBlock)
+
+				yoloTrainers = append(yoloTrainers, yoloL.yoloTrainer)
+
 				filtersIdx = prevFilters
 				break
 			case "maxpool":
@@ -413,11 +423,13 @@ func NewYoloV3Tiny(g *gorgonia.ExprGraph, input *gorgonia.Node, classesNumber, b
 	}
 
 	model := &YOLOv3{
-		classesNum:   classesNumber,
-		boxesPerCell: boxesPerCell,
-		netSize:      netWidth,
-		out:          yoloNodes,
-		layersInfo:   linfo,
+		classesNum:    classesNumber,
+		boxesPerCell:  boxesPerCell,
+		netSize:       netWidth,
+		out:           yoloNodes,
+		layersInfo:    linfo,
+		LearningNodes: learningNodes,
+		training:      yoloTrainers,
 	}
 
 	return model, nil
