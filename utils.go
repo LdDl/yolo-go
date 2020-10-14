@@ -12,10 +12,45 @@ import (
 
 	"github.com/chewxy/math32"
 	"gorgonia.org/gorgonia"
+	"gorgonia.org/tensor"
 )
 
 // Slice Just alias
 var Slice = gorgonia.S
+
+func rectifyBoxF32(x, y, h, w float32, imgSize int) image.Rectangle {
+	return image.Rect(MaxInt(int(x-w/2), 0), MaxInt(int(y-h/2), 0), MinInt(int(x+w/2+1), imgSize), MinInt(int(y+h/2+1), imgSize))
+}
+
+func findIntElement(arr []int, ele int) int {
+	for i := range arr {
+		if arr[i] == ele {
+			return i
+		}
+	}
+	return -1
+}
+
+func tensorToF32(in tensor.Tensor) (input32 []float32, err error) {
+	in.Reshape(in.Shape().TotalSize())
+	input32 = make([]float32, 0)
+	input32 = make([]float32, in.Shape().TotalSize())
+	for i := 0; i < in.Shape()[0]; i++ {
+		var buf interface{}
+		buf, err = in.At(i)
+		switch in.Dtype() {
+		case tensor.Float32:
+			input32[i] = buf.(float32)
+			break
+		case tensor.Float64:
+			input32[i] = float32(buf.(float64))
+			break
+		default:
+			return nil, fmt.Errorf("convertTensorToFloat32() supports only Float32/Float64 types of tensor")
+		}
+	}
+	return input32, nil
+}
 
 // IOUFloat32 Intersection Over Union for float32
 func IOUFloat32(r1, r2 image.Rectangle) float32 {
@@ -24,6 +59,24 @@ func IOUFloat32(r1, r2 image.Rectangle) float32 {
 	r1Area := r1.Dx() * r1.Dy()
 	r2Area := r2.Dx() * r2.Dy()
 	return float32(interArea) / float32(r1Area+r2Area-interArea)
+}
+
+func getBestIOUF32(input, target []float32, numClasses, dims int) [][]float32 {
+	ious := make([][]float32, 0)
+	imgsize := float32(dims)
+	for i := 0; i < len(input); i = i + numClasses + 5 {
+		ious = append(ious, []float32{0, -1})
+		r1 := rectifyBoxF32(input[i], input[i+1], input[i+2], input[i+3], dims)
+		for j := 0; j < len(target); j = j + 5 {
+			r2 := rectifyBoxF32(target[j+1]*imgsize, target[j+2]*imgsize, target[j+3]*imgsize, target[j+4]*imgsize, dims)
+			curiou := IOUFloat32(r1, r2)
+			if curiou > ious[i/(5+numClasses)][0] {
+				ious[i/(5+numClasses)][0] = curiou
+				ious[i/(5+numClasses)][1] = float32(j / 5)
+			}
+		}
+	}
+	return ious
 }
 
 // Rectify Creates rectangle

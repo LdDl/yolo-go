@@ -123,8 +123,32 @@ func (op *yoloOp) Do(inputs ...gorgonia.Value) (retVal gorgonia.Value, err error
 		return op.evaluateYOLOF32(inputTensor, batchSize, stride, gridSize, bboxAttributes, len(op.masks), currentAnchors)
 	}
 
-	// @todo Training mode
-	return nil, nil
+	// Training mode
+	inputTensorCopy := inputTensor.Clone().(tensor.Tensor)
+	var yoloBBoxes tensor.Tensor
+	op.evaluateYOLOF32(inputTensorCopy, batchSize, stride, gridSize, bboxAttributes, len(op.masks), currentAnchors)
+	if op.training == nil {
+		return nil, fmt.Errorf("Nil pointer on training params in yoloOp [Training mode]")
+	}
+	op.training.inputs, err = tensorToF32(inputTensor)
+	if err != nil {
+		return nil, errors.Wrap(err, "Can't cast tensor to []float32 for inputs [Training mode]")
+	}
+	op.training.bboxes, err = tensorToF32(yoloBBoxes)
+	if err != nil {
+		return nil, errors.Wrap(err, "Can't cast tensor to []float32 for bboxes [Training mode]")
+	}
+
+	preparedYOLOout := prepareTrainingOutputF32(
+		op.training.inputs, op.training.bboxes,
+		op.training.targets, op.training.scales,
+		op.bestAnchors, op.masks,
+		op.numClasses, op.dimensions, op.gridSize, op.ignoreTresh,
+	)
+
+	yoloTrainingTensor := tensor.New(tensor.WithShape(1, op.gridSize*op.gridSize*len(op.masks), 5+op.numClasses), tensor.Of(tensor.Float32), tensor.WithBacking(preparedYOLOout))
+
+	return yoloTrainingTensor, nil
 }
 
 /* Unexported methods */
