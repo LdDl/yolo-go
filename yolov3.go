@@ -17,6 +17,9 @@ type YOLOv3 struct {
 	classesNum, boxesPerCell, netSize int
 	out                               []*gorgonia.Node
 	layersInfo                        []string
+
+	learningNodes []*gorgonia.Node
+	training      []YoloTrainer
 }
 
 // Print Print architecture of network
@@ -418,4 +421,26 @@ func NewYoloV3Tiny(g *gorgonia.ExprGraph, input *gorgonia.Node, classesNumber, b
 	}
 
 	return model, nil
+}
+
+// ActivateTrainingMode Activates training mode for unexported yoloOP
+func (net *YOLOv3) ActivateTrainingMode() error {
+	if len(net.training) == 0 {
+		return fmt.Errorf("Model doesn't contain any YOLO layer to activate training mode")
+	}
+	for i := range net.training {
+		net.training[i].ActivateTrainingMode()
+	}
+	return nil
+}
+
+// DisableTrainingMode Disables training mode for unexported yoloOP
+func (net *YOLOv3) DisableTrainingMode() error {
+	if len(net.training) == 0 {
+		return fmt.Errorf("Model doesn't contain any YOLO layer to disable training mode")
+	}
+	for i := range net.training {
+		net.training[i].DisableTrainingMode()
+	}
+	return nil
 }

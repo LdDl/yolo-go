@@ -106,9 +106,13 @@ func main() {
 			fmt.Printf("Can't prepare labeled data due the error: %s\n", err.Error())
 			return
 		}
-		for i := range labeledData {
-			fmt.Println(labeledData[i])
+		_ = labeledData
+		err = model.ActivateTrainingMode()
+		if err != nil {
+			fmt.Printf("Can't activate training mode due the error: %s\n", err.Error())
+			return
 		}
+
 		break
 	default:
 		fmt.Printf("Mode '%s' is not implemented", *modeStr)
