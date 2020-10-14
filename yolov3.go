@@ -18,7 +18,7 @@ type YOLOv3 struct {
 	out                               []*gorgonia.Node
 	layersInfo                        []string
 
-	learningNodes []*gorgonia.Node
+	LearningNodes []*gorgonia.Node
 	training      []YoloTrainer
 }
 
@@ -441,6 +441,17 @@ func (net *YOLOv3) DisableTrainingMode() error {
 	}
 	for i := range net.training {
 		net.training[i].DisableTrainingMode()
+	}
+	return nil
+}
+
+// SetTarget Set desired target for net's output (for training mode)
+func (net *YOLOv3) SetTarget(target []float32) error {
+	if len(net.training) == 0 {
+		return fmt.Errorf("Model has not any YOLO layers")
+	}
+	for i := range net.training {
+		net.training[i].SetTarget(target)
 	}
 	return nil
 }

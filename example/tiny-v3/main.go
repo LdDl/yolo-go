@@ -100,19 +100,101 @@ func main() {
 
 		break
 	case "training":
-		// W.I.P
+		// Prepare training data
 		labeledData, err := parseFolder(*trainingFolder)
 		if err != nil {
 			fmt.Printf("Can't prepare labeled data due the error: %s\n", err.Error())
 			return
 		}
-		_ = labeledData
 		err = model.ActivateTrainingMode()
 		if err != nil {
 			fmt.Printf("Can't activate training mode due the error: %s\n", err.Error())
 			return
 		}
 
+		// Init solver and concat YOLO output
+		solver := gorgonia.NewRMSPropSolver(gorgonia.WithLearnRate(0.00001))
+		modelOut := model.GetOutput()
+		concatOut, err := gorgonia.Concat(1, modelOut...)
+		if err != nil {
+			fmt.Printf("Can't concatenate YOLO layers outputs in Training mode due the error: %s\n", err.Error())
+			return
+		}
+
+		// Evaluate costs
+		costs, err := gorgonia.Sum(concatOut, 0, 1, 2)
+		if err != nil {
+			fmt.Printf("Can't evaluate costs in Training mode due the error: %s\n", err.Error())
+			return
+		}
+
+		// Evaluate gradients
+		_, err = gorgonia.Grad(costs, model.LearningNodes...)
+		if err != nil {
+			fmt.Printf("Can't evaluate gradients in Training mode due the error: %s\n", err.Error())
+			return
+		}
+		prog, locMap, err := gorgonia.Compile(g)
+		if err != nil {
+			fmt.Printf("Can't compile graph in Training mode due the error: %s\n", err.Error())
+			return
+		}
+
+		// Prepare new Tape machine
+		tm := gorgonia.NewTapeMachine(g, gorgonia.WithPrecompiled(prog, locMap), gorgonia.BindDualValues(model.LearningNodes...))
+		defer tm.Close()
+
+		iter := 0
+		for i := range labeledData {
+			// Parse image file as []float32
+			filePath := fmt.Sprintf("%s/%s.jpg", *trainingFolder, i)
+			imgf32, err := yologo.GetFloat32Image(filePath, imgHeight, imgWidth)
+			if err != nil {
+				fmt.Printf("Can't read []float32 from image due the error: %s\n", err.Error())
+				return
+			}
+
+			// Set desired target on current step
+			err = model.SetTarget(labeledData[i])
+			if err != nil {
+				fmt.Printf("Can't set []float32 as target due the error: %s\n", err.Error())
+				return
+			}
+
+			// Prepare image tensor
+			image := tensor.New(tensor.WithShape(1, channels, imgHeight, imgWidth), tensor.Of(tensor.Float32), tensor.WithBacking(imgf32))
+
+			// Fill input tensor with data from image tensor
+			err = gorgonia.Let(input, image)
+			if err != nil {
+				fmt.Printf("Can't let input = []float32 due the error: %s\n", err.Error())
+				return
+			}
+
+			// Do training step
+			st := time.Now()
+			if err := tm.RunAll(); err != nil {
+				fmt.Printf("Can't run tape machine due the error: %s\n", err.Error())
+				return
+			}
+			// Reduce learning rate with more iteration steps
+			if iter == 15 {
+				solver = gorgonia.NewRMSPropSolver(gorgonia.WithLearnRate(0.000001))
+			}
+			if iter == 150 {
+				solver = gorgonia.NewRMSPropSolver(gorgonia.WithLearnRate(0.0000001))
+			}
+			fmt.Printf("Training iteration #%d done in: %v\n", iter, time.Since(st))
+			fmt.Printf("\tCurrent costs are: %v\n", costs.Value())
+			err = solver.Step(gorgonia.NodesToValueGrads(model.LearningNodes))
+			if err != nil {
+				fmt.Printf("Can't do solver.Step() in Training mode due the error: %s\n", err.Error())
+			}
+
+			// Do not forget to reset Tape machine on each step
+			tm.Reset()
+			iter++
+		}
 		break
 	default:
 		fmt.Printf("Mode '%s' is not implemented", *modeStr)
