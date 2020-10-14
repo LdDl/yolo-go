@@ -12,15 +12,15 @@ go run main.go -h
 ```
 ```shell
   -cfg string
-        Path to net configuration file (default "./data/yolov3-tiny.cfg")
+        Path to net configuration file (default "../../test_network_data/yolov3-tiny.cfg")
   -image string
-        Path to image file for 'detector' mode (default "./data/dog_416x416.jpg")
+        Path to image file for 'detector' mode (default "../../test_network_data/dog_416x416.jpg")
   -mode string
         Choose the mode: detector/training (default "detector")
   -train string
-        Path to folder with labeled data (default "./data")
+        Path to folder with labeled data (default "../../test_yolo_op_data")
   -weights string
-        Path to weights file (default "./data/yolov3-tiny.weights")
+        Path to weights file (default "../../test_network_data/yolov3-tiny.weights")
 ```
 
 For testing:
