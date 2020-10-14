@@ -18,17 +18,23 @@ type yoloOp struct {
 	ignoreTresh float32
 	dimensions  int
 	numClasses  int
+
 	trainMode   bool
+	gridSize    int
+	bestAnchors [][]int
+	training    *yoloTraining
 }
 
-func newYoloOp(anchors []float32, masks []int, netSize, numClasses int, ignoreTresh float32, trainMode bool) *yoloOp {
+func newYoloOp(anchors []float32, masks []int, netSize, gridSize, numClasses int, ignoreTresh float32) *yoloOp {
 	yoloOp := &yoloOp{
 		anchors:     anchors,
 		dimensions:  netSize,
 		numClasses:  numClasses,
 		ignoreTresh: ignoreTresh,
 		masks:       masks,
-		trainMode:   trainMode,
+		trainMode:   false,
+		gridSize:    gridSize,
+		training:    &yoloTraining{},
 	}
 	return yoloOp
 }
@@ -44,12 +50,8 @@ func newYoloOp(anchors []float32, masks []int, netSize, numClasses int, ignoreTr
 	targets - Desired targets.
 */
 func YOLOv3Node(input *gorgonia.Node, anchors []float32, masks []int, netSize, numClasses int, ignoreTresh float32, targets ...*gorgonia.Node) (*gorgonia.Node, error) {
-	if len(targets) > 1 {
-		// @todo training
-		op := newYoloOp(anchors, masks, netSize, numClasses, ignoreTresh, true)
-		return gorgonia.ApplyOp(op, input)
-	}
-	op := newYoloOp(anchors, masks, netSize, numClasses, ignoreTresh, false)
+	// @todo: need to check input.Shape()[2] accessibility
+	op := newYoloOp(anchors, masks, netSize, numClasses, input.Shape()[2], ignoreTresh)
 	return gorgonia.ApplyOp(op, input)
 }
 
@@ -109,7 +111,20 @@ func (op *yoloOp) Do(inputs ...gorgonia.Value) (retVal gorgonia.Value, err error
 		}
 		currentAnchors = append(currentAnchors, op.anchors[i*2], op.anchors[i*2+1])
 	}
-	return op.evaluateYOLOF32(inputTensor, batchSize, stride, gridSize, bboxAttributes, len(op.masks), currentAnchors)
+
+	// Prepare reshaped input (it's common for both training and detection mode)
+	err = prepareReshapedInput(inputTensor, batchSize, gridSize, bboxAttributes, len(op.masks))
+	if err != nil {
+		return nil, errors.Wrap(err, "Can't prepare reshaped input")
+	}
+
+	// Just inference without backpropagation in case of detection mode
+	if !op.trainMode {
+		return op.evaluateYOLOF32(inputTensor, batchSize, stride, gridSize, bboxAttributes, len(op.masks), currentAnchors)
+	}
+
+	// @todo Training mode
+	return nil, nil
 }
 
 /* Unexported methods */
@@ -134,25 +149,27 @@ func (op *yoloOp) checkInput(inputs ...gorgonia.Value) (tensor.Tensor, error) {
 	}
 }
 
-func (op *yoloOp) evaluateYOLOF32(input tensor.Tensor, batchSize, stride, grid, bboxAttrs, numAnchors int, currentAnchors []float32) (retVal tensor.Tensor, err error) {
-
-	err = input.Reshape(batchSize, bboxAttrs*numAnchors, grid*grid)
+func prepareReshapedInput(input tensor.Tensor, batchSize, grid, bboxAttrs, numAnchors int) error {
+	err := input.Reshape(batchSize, bboxAttrs*numAnchors, grid*grid)
 	if err != nil {
-		return nil, errors.Wrap(err, "Can't make reshape grid^2 for YOLO")
+		return errors.Wrap(err, "Can't make reshape grid^2 for YOLO")
 	}
-
 	err = input.T(0, 2, 1)
 	if err != nil {
-		return nil, errors.Wrap(err, "Can't safely transponse input for YOLO")
+		return errors.Wrap(err, "Can't safely transponse input for YOLO")
 	}
 	err = input.Transpose()
 	if err != nil {
-		return nil, errors.Wrap(err, "Can't transponse input for YOLO")
+		return errors.Wrap(err, "Can't transponse input for YOLO")
 	}
 	err = input.Reshape(batchSize, grid*grid*numAnchors, bboxAttrs)
 	if err != nil {
-		return nil, errors.Wrap(err, "Can't reshape bbox for YOLO")
+		return errors.Wrap(err, "Can't reshape bbox for YOLO")
 	}
+	return nil
+}
+
+func (op *yoloOp) evaluateYOLOF32(input tensor.Tensor, batchSize, stride, grid, bboxAttrs, numAnchors int, currentAnchors []float32) (retVal tensor.Tensor, err error) {
 
 	// Activation of x, y via sigmoid function
 	slXY, err := input.Slice(nil, nil, Slice(0, 2))
