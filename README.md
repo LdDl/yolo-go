@@ -43,7 +43,7 @@ Weights can be downloaded via curl-scripts [download_weights_yolo_v3.sh](test_ne
 Configuration files: [yolov3-tiny.cfg](test_network_data/yolov3-tiny.cfg) and [yolov3.cfg](test_network_data/yolov3.cfg)
 
 # Network Architecture
-Tiny-YOLOv3 Architecture is:
+## Tiny-YOLOv3 Architecture is:
 ```
 Convolution layer: Filters->16 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
 Maxpooling layer: Size->2 Stride->2
@@ -71,7 +71,7 @@ Convolution layer: Filters->255 Padding->0 Kernel->1x1 Stride->1 Activation->lin
 YOLO layer: Mask->0 Anchors->[10, 14]   |       Mask->1 Anchors->[23, 27]       |       Mask->2 Anchors->[37, 58] 
 ```
 
-YOLOv3 Architecture is:
+## YOLOv3 Architecture is:
 ```
 Convolution layer: Filters->32 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->64 Padding->1 Kernel->3x3 Stride->2 Activation->leaky Batch->1 Bias->false
