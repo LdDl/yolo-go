@@ -4,7 +4,7 @@ Both YOLOv3 and tiny-YOLOv3 are implemented.
 
 # Usage
 
-Navigate to [examples/yolo-v3](examples/yolo-v3) folder and run [main.go](examples/yolo-v3/main.go).
+Navigate to [example/yolo-v3](example/yolo-v3) folder and run [main.go](example/yolo-v3/main.go).
 
 Available flags 
 ```go

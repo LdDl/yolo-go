@@ -8,6 +8,8 @@ github.com/apache/arrow/go/arrow v0.0.0-20201014040816-ea29f65e0d58 h1:cb0pJNJAW
 github.com/apache/arrow/go/arrow v0.0.0-20201014040816-ea29f65e0d58/go.mod h1:c9sxoIT3YgLxH4UhLOCKaBlEojuMhVYpk4Ntv3opUTQ=
 github.com/apache/arrow/go/arrow v0.0.0-20201023142933-eea8d352bf31 h1:SVd1oQR19twOxW3+SJmPygn5kAXxv+N2/qazp7KX+LI=
 github.com/apache/arrow/go/arrow v0.0.0-20201023142933-eea8d352bf31/go.mod h1:c9sxoIT3YgLxH4UhLOCKaBlEojuMhVYpk4Ntv3opUTQ=
+github.com/apache/arrow/go/arrow v0.0.0-20201026153406-f6501a5ee16a h1:Z8rAPvxezgyDV29bizJ2Z6yRYZnS68UJFCHwJTErZ88=
+github.com/apache/arrow/go/arrow v0.0.0-20201026153406-f6501a5ee16a/go.mod h1:c9sxoIT3YgLxH4UhLOCKaBlEojuMhVYpk4Ntv3opUTQ=
 github.com/awalterschulze/gographviz v0.0.0-20190221210632-1e9ccb565bca h1:xwIXr1FpA2XBoohlpvgb11No/zbsh5Clm/98PWPcHVA=
 github.com/awalterschulze/gographviz v0.0.0-20190221210632-1e9ccb565bca/go.mod h1:GEV5wmg4YquNw7v1kkyoX9etIk8yVmXj+AkDHuuETHs=
 github.com/awalterschulze/gographviz v2.0.1+incompatible h1:XIECBRq9VPEQqkQL5pw2OtjCAdrtIgFKoJU8eT98AS8=
@@ -56,6 +58,8 @@ github.com/golang/protobuf v1.4.0/go.mod h1:jodUvKwWbYaEsadDk5Fwe5c77LiNKVO9IDvq
 github.com/golang/protobuf v1.4.1/go.mod h1:U8fpvMrcmy5pZrNK1lt4xCsGvpyWQ/VVv6QDs8UjoX8=
 github.com/golang/protobuf v1.4.2 h1:+Z5KGCizgyZCbGh1KZqA0fcLLkwbsjIzS4aV2v7wJX0=
 github.com/golang/protobuf v1.4.2/go.mod h1:oDoupMAO8OvCJWAcko0GGGIgR6R6ocIYbsSw735rRwI=
+github.com/golang/protobuf v1.4.3 h1:JjCZWpVbqXDqFVmTfYWEVTMIYrL/NPdPSCHPJ0T/raM=
+github.com/golang/protobuf v1.4.3/go.mod h1:oDoupMAO8OvCJWAcko0GGGIgR6R6ocIYbsSw735rRwI=
 github.com/gonum/blas v0.0.0-20181208220705-f22b278b28ac/go.mod h1:P32wAyui1PQ58Oce/KYkOqQv8cVw1zAapXOl+dRFGbc=
 github.com/google/flatbuffers v1.10.0/go.mod h1:1AeVuKshWv4vARoZatz6mlQ0JxURH0Kv5+zNeJKJCa8=
 github.com/google/flatbuffers v1.11.0 h1:O7CEyB8Cb3/DmtxODGtLHcEvpr81Jm5qLg/hsHnxA2A=
@@ -208,6 +212,8 @@ gorgonia.org/tensor v0.9.11 h1:L7C+syNtsIcZ/91tJFT0QnAzXJyFt6tWSW6+URIucDM=
 gorgonia.org/tensor v0.9.11/go.mod h1:fsbuoeL1vV3fe8N+HZxEXJ7WI4z1pPP3luMBCgn0HAA=
 gorgonia.org/tensor v0.9.13 h1:Lxj9iNVMbM0awDnyZkGaA5CHwEUZ9hzJZhJrh+slHA8=
 gorgonia.org/tensor v0.9.13/go.mod h1:fsbuoeL1vV3fe8N+HZxEXJ7WI4z1pPP3luMBCgn0HAA=
+gorgonia.org/tensor v0.9.14 h1:EwM+jThO1lod2T+cswJoUbFAVAY8zMPdtqfflZbywEc=
+gorgonia.org/tensor v0.9.14/go.mod h1:fsbuoeL1vV3fe8N+HZxEXJ7WI4z1pPP3luMBCgn0HAA=
 gorgonia.org/vecf32 v0.7.0/go.mod h1:iHG+kvTMqGYA0SgahfO2k62WRnxmHsqAREGbayRDzy8=
 gorgonia.org/vecf32 v0.9.0 h1:PClazic1r+JVJ1dEzRXgeiVl4g1/Hf/w+wUSqnco1Xg=
 gorgonia.org/vecf32 v0.9.0/go.mod h1:NCc+5D2oxddRL11hd+pCB1PEyXWOyiQxfZ/1wwhOXCA=
