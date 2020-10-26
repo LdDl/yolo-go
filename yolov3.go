@@ -34,8 +34,8 @@ func (net *YOLOv3) GetOutput() []*gorgonia.Node {
 	return net.out
 }
 
-// NewYoloV3Tiny Create new tiny YOLO v3
-func NewYoloV3Tiny(g *gorgonia.ExprGraph, input *gorgonia.Node, classesNumber, boxesPerCell int, leakyCoef float64, cfgFile, weightsFile string) (*YOLOv3, error) {
+// NewYoloV3 Create new YOLO v3
+func NewYoloV3(g *gorgonia.ExprGraph, input *gorgonia.Node, classesNumber, boxesPerCell int, leakyCoef float64, cfgFile, weightsFile string) (*YOLOv3, error) {
 	shp := input.Shape()
 	if len(shp) < 4 {
 		return nil, fmt.Errorf("Input for tiny-YOLOv3 must contain 4 dimensions, but recieved %d)", len(shp))
@@ -407,6 +407,34 @@ func NewYoloV3Tiny(g *gorgonia.ExprGraph, input *gorgonia.Node, classesNumber, b
 				layers = append(layers, &l)
 				filtersIdx = prevFilters
 				break
+			case "shortcut":
+				fromStr, ok := block["from"]
+				if !ok {
+					fmt.Printf("No field 'from' for route layer")
+					continue
+				}
+				from, err := strconv.Atoi(fromStr)
+				if err != nil {
+					fmt.Printf("Field 'from' should be of type int (value='%s')\n", fromStr)
+					continue
+				}
+
+				l := shortcutLayer{
+					layerIDX: from,
+				}
+
+				var ll layerN = &l
+
+				shortcutBlock, err := l.ToNode(g, networkNodes[i-1], networkNodes[i+from])
+				if err != nil {
+					fmt.Printf("\tError preparing Shortcut block: %s\n", err.Error())
+				}
+				networkNodes = append(networkNodes, shortcutBlock)
+				input = shortcutBlock
+
+				layers = append(layers, &ll)
+				filtersIdx = prevFilters
+
 			default:
 				fmt.Printf("Impossible layer: '%s'\n", layerType)
 				break

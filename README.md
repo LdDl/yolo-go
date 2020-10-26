@@ -1,10 +1,10 @@
-# WIP
+# WIP. PRs are welcome
 Port of [Darknet YOLO](https://github.com/pjreddie/darknet#darknet), but via [Gorgonia](https://github.com/gorgonia/gorgonia)
-**Note: do not try to use common YOLOv3, because shortcut layer is not implemented yet**
+Both YOLOv3 and tiny-YOLOv3 are implemented.
 
 # Usage
 
-Navigate to [examples/tiny-v3](examples/tiny-v3) folder and run [main.go](examples/tiny-v3/main.go).
+Navigate to [examples/yolo-v3](examples/yolo-v3) folder and run [main.go](examples/yolo-v3/main.go).
 
 Available flags 
 ```go
@@ -23,41 +23,161 @@ go run main.go -h
         Path to weights file (default "../../test_network_data/yolov3-tiny.weights")
 ```
 
-For testing:
+For testing tiny-yolov3:
 ```shell
 go run main.go --mode detector --cfg ../../test_network_data/yolov3-tiny.cfg --weights ../../test_network_data/yolov3-tiny.weights --image ../../test_network_data/dog_416x416.jpg
 ```
 
-For training:
+For testing yolov3:
+```shell
+go run main.go --mode detector --cfg ../../test_network_data/yolov3.cfg --weights ../../test_network_data/yolov3.weights --image ../../test_network_data/dog_416x416.jpg
+```
+
+For training **WIP. PRs are welcome**:
 ```shell
 go run main.go --mode training --cfg ../../test_network_data/yolov3-tiny.cfg --weights ../../test_network_data/yolov3-tiny.weights --image ../../test_network_data/dog_416x416.jpg --train ../../test_yolo_op_data
 ```
 
-# Tiny YOLOv3 Architecture
-Architecture is:
+# Weights and configuration
+Weights can be downloaded via curl-scripts [download_weights_yolo_v3.sh](test_network_data/download_weights_yolo_v3.sh) and [download_weights_yolo_tiny_v3.sh](test_network_data/download_weights_yolo_tiny_v3.sh).
+Configuration files: [yolov3-tiny.cfg](test_network_data/yolov3-tiny.cfg) and [yolov3.cfg](test_network_data/yolov3.cfg)
+
+# Network Architecture
+Tiny-YOLOv3 Architecture is:
 ```
-0 Convolutional 16 3 × 3/1 416 × 416 × 3 416 × 416 × 16
-1 Maxpool    2 × 2/2 416 × 416 × 16 208 × 208 × 16
-2 Convolutional 32 3 × 3/1 208 × 208 × 16 208 × 208 × 32
-3 Maxpool    2 × 2/2 208 × 208 × 32 104 × 104 × 32
-4 Convolutional 64 3 × 3/1 104 × 104 × 32 104 × 104 × 64
-5 Maxpool    2 × 2/2 104 × 104 × 64 52 × 52 × 64
-6 Convolutional 128 3 × 3/1 52 × 52 × 64 52 × 52 × 128
-7 Maxpool    2 × 2/2 52 × 52 × 128 26 × 26 × 128
-8 Convolutional 256 3 × 3/1 26 × 26 × 128 26 × 26 × 256
-9 Maxpool    2 × 2/2 26 × 26 × 256 13 × 13 × 256
-10 Convolutional 512 3 × 3/1 13 × 13 × 256 13 × 13 × 512
-11 Maxpool    2 × 2/1 13 × 13 × 512 13 × 13 × 512
-12 Convolutional 1024 3 × 3/1 13 × 13 × 512 13 × 13 × 1024
-13 Convolutional 256 1 × 1/1 13 × 13 × 1024 13 × 13 × 256
-14 Convolutional 512 3 × 3/1 13 × 13 × 256 13 × 13 × 512
-15 Convolutional 255 1 × 1/1 13 × 13 × 512 13 × 13 × 255
-16 YOLO        
-17 Route 13       
-18 Convolutional 128 1 × 1/1 13 × 13 × 256 13 × 13 × 128
-19 Up‐sampling    2 × 2/1 13 × 13 × 128 26 × 26 × 128
-20 Route 19 8       
-21 Convolutional 256 3 × 3/1 13 × 13 × 384 13 × 13 × 256
-22 Convolutional 255 1 × 1/1 13 × 13 × 256 13 × 13 × 256
-23 YOLO 
+Convolution layer: Filters->16 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Maxpooling layer: Size->2 Stride->2
+Convolution layer: Filters->32 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Maxpooling layer: Size->2 Stride->2
+Convolution layer: Filters->64 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Maxpooling layer: Size->2 Stride->2
+Convolution layer: Filters->128 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Maxpooling layer: Size->2 Stride->2
+Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Maxpooling layer: Size->2 Stride->2
+Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Maxpooling layer: Size->2 Stride->1
+Convolution layer: Filters->1024 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->255 Padding->0 Kernel->1x1 Stride->1 Activation->linear Batch->0 Bias->true
+YOLO layer: Mask->3 Anchors->[81, 82]   |       Mask->4 Anchors->[135, 169]     |       Mask->5 Anchors->[344, 319]
+Route layer: Start->13
+Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Upsample layer: Scale->2
+Route layer: Start->19 End->8
+Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->255 Padding->0 Kernel->1x1 Stride->1 Activation->linear Batch->0 Bias->true
+YOLO layer: Mask->0 Anchors->[10, 14]   |       Mask->1 Anchors->[23, 27]       |       Mask->2 Anchors->[37, 58] 
+```
+
+YOLOv3 Architecture is:
+```
+Convolution layer: Filters->32 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->64 Padding->1 Kernel->3x3 Stride->2 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->32 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->64 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->128 Padding->1 Kernel->3x3 Stride->2 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->64 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->128 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->64 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->128 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->2 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->2 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->1024 Padding->1 Kernel->3x3 Stride->2 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->512 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->1024 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->512 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->1024 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->512 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->1024 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->512 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->1024 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Shortcut layer: index->-3
+Convolution layer: Filters->512 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->1024 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->512 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->1024 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->512 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->1024 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->255 Padding->0 Kernel->1x1 Stride->1 Activation->linear Batch->0 Bias->true
+YOLO layer: Mask->6 Anchors->[116, 90]  |       Mask->7 Anchors->[156, 198]     |       Mask->8 Anchors->[373, 326]
+Route layer: Start->79
+Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Upsample layer: Scale->2
+Route layer: Start->85 End->61
+Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->255 Padding->0 Kernel->1x1 Stride->1 Activation->linear Batch->0 Bias->true
+YOLO layer: Mask->3 Anchors->[30, 61]   |       Mask->4 Anchors->[62, 45]       |       Mask->5 Anchors->[59, 119]
+Route layer: Start->91
+Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Upsample layer: Scale->2
+Route layer: Start->97 End->36
+Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
+Convolution layer: Filters->255 Padding->0 Kernel->1x1 Stride->1 Activation->linear Batch->0 Bias->true
+YOLO layer: Mask->0 Anchors->[10, 13]   |       Mask->1 Anchors->[16, 30]       |       Mask->2 Anchors->[33, 23]
 ```

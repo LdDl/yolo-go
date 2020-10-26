@@ -3,7 +3,7 @@ module github.com/LdDl/yolo-go
 go 1.14
 
 require (
-	github.com/apache/arrow/go/arrow v0.0.0-20201014040816-ea29f65e0d58 // indirect
+	github.com/apache/arrow/go/arrow v0.0.0-20201023142933-eea8d352bf31 // indirect
 	github.com/awalterschulze/gographviz v2.0.1+incompatible // indirect
 	github.com/chewxy/hm v1.0.0
 	github.com/chewxy/math32 v1.0.6
@@ -15,5 +15,5 @@ require (
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	gonum.org/v1/gonum v0.8.1 // indirect
 	gorgonia.org/gorgonia v0.9.15
-	gorgonia.org/tensor v0.9.11
+	gorgonia.org/tensor v0.9.13
 )

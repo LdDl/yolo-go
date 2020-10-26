@@ -43,7 +43,7 @@ func main() {
 	input := gorgonia.NewTensor(g, tensor.Float32, 4, gorgonia.WithShape(1, channels, imgWidth, imgHeight), gorgonia.WithName("input"))
 
 	// Prepare YOLOv3 tiny vartiation
-	model, err := yologo.NewYoloV3Tiny(g, input, len(cocoClasses), boxes, leakyCoef, *cfg, *weights)
+	model, err := yologo.NewYoloV3(g, input, len(cocoClasses), boxes, leakyCoef, *cfg, *weights)
 	if err != nil {
 		fmt.Printf("Can't prepare tiny-YOLOv3 network due the error: %s\n", err.Error())
 		return
