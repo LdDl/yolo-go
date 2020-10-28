@@ -1,6 +1,6 @@
 # ROADMAP
 
-New ideas, thought about needed features will be store in this file.
+New ideas, thought about needed features will be stored in this file.
 
 - [x] Darknet YOLO v3 layers
     - [x] Convolution layer;
