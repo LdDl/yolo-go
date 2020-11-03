@@ -420,7 +420,7 @@ func NewYoloV3(g *gorgonia.ExprGraph, input *gorgonia.Node, classesNumber, boxes
 				}
 
 				l := shortcutLayer{
-					layerIDX: from,
+					layerIDX: i - 1, // i-1 == i+from
 				}
 
 				var ll layerN = &l
