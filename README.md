@@ -77,77 +77,77 @@ Convolution layer: Filters->32 Padding->1 Kernel->3x3 Stride->1 Activation->leak
 Convolution layer: Filters->64 Padding->1 Kernel->3x3 Stride->2 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->32 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->64 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->1 | index to->3
 Convolution layer: Filters->128 Padding->1 Kernel->3x3 Stride->2 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->64 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->128 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->5 | index to->7
 Convolution layer: Filters->64 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->128 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->8 | index to->10
 Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->2 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->12 | index to->14
 Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->15 | index to->17
 Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->18 | index to->20
 Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->21 | index to->23
 Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->24 | index to->26
 Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->27 | index to->29
 Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->30 | index to->32
 Convolution layer: Filters->128 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->256 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->33 | index to->35
 Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->2 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->37 | index to->39
 Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->40 | index to->42
 Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->43 | index to->45
 Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->46 | index to->48
 Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->49 | index to->51
 Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->52 | index to->54
 Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->55 | index to->57
 Convolution layer: Filters->256 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->512 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->58 | index to->60
 Convolution layer: Filters->1024 Padding->1 Kernel->3x3 Stride->2 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->512 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->1024 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->62 | index to->64
 Convolution layer: Filters->512 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->1024 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->65 | index to->67
 Convolution layer: Filters->512 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->1024 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->68 | index to->70
 Convolution layer: Filters->512 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->1024 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
-Shortcut layer: index->-3
+Shortcut layer: index from->71 | index to->73
 Convolution layer: Filters->512 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->1024 Padding->1 Kernel->3x3 Stride->1 Activation->leaky Batch->1 Bias->false
 Convolution layer: Filters->512 Padding->0 Kernel->1x1 Stride->1 Activation->leaky Batch->1 Bias->false

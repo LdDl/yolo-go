@@ -8,11 +8,12 @@ import (
 )
 
 type shortcutLayer struct {
-	layerIDX int
+	layerFromIdx int
+	layerToIdx   int
 }
 
 func (l *shortcutLayer) String() string {
-	return fmt.Sprintf("Shortcut layer: index->%[1]d", l.layerIDX)
+	return fmt.Sprintf("Shortcut layer: index from->%[1]d | index to->%[2]d", l.layerFromIdx, l.layerToIdx)
 }
 
 func (l *shortcutLayer) Type() string {
